@@ -6,6 +6,7 @@ shopt -s globstar nullglob
 
 # Global options
 DIR="$1"
+shift
 
 # Prepare data
 for file in "$DIR"/**/*.JPG
@@ -21,7 +22,7 @@ for file in "$DIR"/**/*.JPG
 do
     {
     du -b "$file" | awk '{ print $1 }'
-    pdm run python3 process.py `# -t 300` -i "$file" |&
+    python3 process.py `# -t 300` -i "$file" "$@" |&
         sed -n 's/.*score: \([0-9]\+\.[0-9]\+\) .*/\1/p'
     echo -n "$file"
     } | tr '\n' $'\t'

@@ -11,5 +11,5 @@ RUN wget -qO - https://github.com/frafra/BlurDetection2/archive/refs/heads/impro
 RUN pdm install --no-self --no-lock
 
 COPY --chmod=755 evaluering.sh .
-ENTRYPOINT ["./evaluering.sh"]
+ENTRYPOINT ["pdm", "run", "./evaluering.sh"]
 CMD ["/data"]
