@@ -16,14 +16,20 @@ do
     mv "$file" "$new_path"
 done
 
+function blur_detection() {
+    python3 process.py "$@" |&
+        sed -n 's/.*score: \([0-9]\+\.[0-9]\+\) .*/\1/p'
+}
+
 # Compute values
-echo -e 'size\tlaplacian_variance\tpath'
+echo -e 'size\tvar_k1\tvar_k3\tvar_k5\tpath'
 for file in "$DIR"/**/*.JPG
 do
     {
     du -b "$file" | awk '{ print $1 }'
-    python3 process.py `# -t 300` -i "$file" "$@" |&
-        sed -n 's/.*score: \([0-9]\+\.[0-9]\+\) .*/\1/p'
+    blur_detection -i "$file" -k 1
+    blur_detection -i "$file" -k 3
+    blur_detection -i "$file" -k 5
     echo -n "$file"
     } | tr '\n' $'\t'
     echo
