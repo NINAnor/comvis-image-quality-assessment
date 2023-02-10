@@ -6,9 +6,10 @@ RUN apt-get update && \
         libgl1 libglib2.0 `# opencv`
 
 WORKDIR /root
-RUN wget -qO - https://github.com/frafra/BlurDetection2/archive/refs/heads/improved.tar.gz | \
-        tar xz --strip-components=1
+COPY BlurDetection2/pyproject.toml BlurDetection2/pdm.lock .
 RUN pdm install --no-self --no-lock
+COPY BlurDetection2/blur_detection blur_detection
+COPY BlurDetection2/process.py .
 
 COPY --chmod=755 evaluering.sh .
 ENTRYPOINT ["pdm", "run", "./evaluering.sh"]

@@ -1,0 +1,3 @@
+[submodule "BlurDetection2"]
+	path = BlurDetection2
+	url = https://github.com/frafra/BlurDetection2.git
