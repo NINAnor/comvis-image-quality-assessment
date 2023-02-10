@@ -18,11 +18,11 @@ done
 
 function blur_detection() {
     python3 process.py "$@" |&
-        sed -n 's/.*score: \([0-9]\+\.[0-9]\+\) .*/\1/p'
+        sed -n -e 's/.*score_var: \([0-9]\+\)\.[0-9]\+ score_max: \([0-9]\+\)\.[0-9]\+.*/\1\n\2/p'
 }
 
 # Compute values
-echo -e 'size\tvar_k1\tvar_k3\tvar_k5\tpath'
+echo -e 'size\tvar_k1\tmax_k1\tvar_k3\tmax_k3\tvar_k5\tmax_k5\tpath'
 for file in "$DIR"/**/*.JPG
 do
     {
