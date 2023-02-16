@@ -33,4 +33,16 @@ do
     echo -n "$file"
     } | tr '\n' $'\t'
     echo
-done
+done > results.tsv
+
+# Generate Cryptpad form
+items="$(tail -n+2 results.tsv |
+    awk -F'\t' '{print $8}' |
+    tr -d '\r' |
+    cut -b7- |
+    while read path
+    do
+        jq --null-input --arg v "$path" --arg uid $(basename "$path" .JPG) \
+            '{v: $v, uid: $uid}'
+    done | jq -sc)"
+jq --argjson items "$items" '.form.scores.opts.items|=$items' form-template.json > form.json
