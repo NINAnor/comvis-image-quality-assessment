@@ -40,9 +40,11 @@ items="$(tail -n+2 results.tsv |
     awk -F'\t' '{print $8}' |
     tr -d '\r' |
     cut -b7- |
-    while read path
+    xargs -I% basename % |
+    sort |
+    while read filename
     do
-        jq --null-input --arg v "$path" --arg uid $(basename "$path" .JPG) \
+        jq --null-input --arg v "$filename" --arg uid $(basename "$filename" .JPG) \
             '{v: $v, uid: $uid}'
     done | jq -sc)"
 jq --argjson items "$items" '.form.scores.opts.items|=$items' form-template.json > form.json
