@@ -2,7 +2,7 @@ FROM debian:bookworm
 
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-        wget xxd jpegoptim python3-pdm \
+        wget xxd imagemagick python3-pdm \
         libgl1 libglib2.0 `# opencv`
 
 WORKDIR /root

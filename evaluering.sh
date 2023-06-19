@@ -12,6 +12,7 @@ OUTPUT="$2"
 for file in "$INPUT"/*.JPG
 do
     jpegoptim --strip-all "$file"
+    mogrify -thumbnail 1024 "$file"
     new_path="$(dirname "$file")/$(xxd -p -l 16 /dev/random).JPG"
     mv "$file" "$new_path"
 done
