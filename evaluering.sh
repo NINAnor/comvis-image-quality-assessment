@@ -5,11 +5,11 @@ set -Eeuo pipefail
 shopt -s globstar nullglob
 
 # Global options
-DIR="$1"
-shift
+INPUT="$1"
+OUTPUT="$2"
 
 # Prepare data
-for file in "$DIR"/**/*.JPG
+for file in "$INPUT"/*.JPG
 do
     jpegoptim --strip-all "$file"
     new_path="$(dirname "$file")/$(xxd -p -l 16 /dev/random).JPG"
@@ -22,18 +22,18 @@ function blur_detection() {
 }
 
 # Compute values
-echo -e 'size\tvar_k1\tmax_k1\tvar_k3\tmax_k3\tvar_k5\tmax_k5\tpath'
-for file in "$DIR"/**/*.JPG
+echo -e 'size\tvar_k1\tmax_k1\tvar_k3\tmax_k3\tvar_k5\tmax_k5\tpath' > "$OUTPUT/results.tsv"
+for file in "$INPUT"/*.JPG
 do
     {
     du -b "$file" | awk '{ print $1 }'
     blur_detection -i "$file" -k 1
     blur_detection -i "$file" -k 3
     blur_detection -i "$file" -k 5
-    echo -n "$file"
+    echo -n ".${file#$INPUT}"
     } | tr '\n' $'\t'
     echo
-done > results.tsv
+done >> "$OUTPUT/results.tsv"
 
 # Generate Cryptpad form
 items="$(tail -n+2 results.tsv |
@@ -47,4 +47,4 @@ items="$(tail -n+2 results.tsv |
         jq --null-input --arg v "$filename" --arg uid $(basename "$filename" .JPG) \
             '{v: $v, uid: $uid}'
     done | jq -sc)"
-jq --argjson items "$items" '.form.scores.opts.items|=$items' form-template.json > form.json
+jq --argjson items "$items" '.form.scores.opts.items|=$items' form-template.json > "$OUTPUT/form.json"

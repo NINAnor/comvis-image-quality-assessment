@@ -13,4 +13,4 @@ COPY BlurDetection2/process.py .
 
 COPY --chmod=755 evaluering.sh .
 ENTRYPOINT ["pdm", "run", "./evaluering.sh"]
-CMD ["/data"]
+CMD ["/input", "/output"]
