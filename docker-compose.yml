@@ -1,0 +1,7 @@
+version: "3.4"
+services:
+  evaluering:
+    build: .
+    volumes:
+      - ./images:/input:ro
+      - ./:/output
